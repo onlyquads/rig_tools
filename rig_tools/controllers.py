@@ -3,6 +3,7 @@ from rig_tools import controllers_shapes_library
 from importlib import reload
 reload(controllers_shapes_library)
 
+
 def draw_curve(curve, curve_name='curve1'):
     '''
     This function is used to create curve controllers. It can create circles
@@ -17,13 +18,14 @@ def draw_curve(curve, curve_name='curve1'):
     mc.rename('curve1', curve_name)
 
 
-
 def create_controller_curve_from_ui(control_curve_name):
     '''
     Create a curve controller from the UI icon clicked.
     Requires a controller to be selected in the viewport. It replaces
-    the selected controller with a new curve from the controller shapes library.
+    the selected controller with a new curve from the controller shapes
+    library.
     '''
+    mc.undoInfo(ock=True)
     # Check selection
     selection = mc.ls(sl=True)
     if not selection:
@@ -31,7 +33,6 @@ def create_controller_curve_from_ui(control_curve_name):
         return
 
     selected_controller = selection[0]
-
 
     # Draw the new curve
     new_curve_name = f"{control_curve_name}_temp"
@@ -56,6 +57,7 @@ def create_controller_curve_from_ui(control_curve_name):
     mc.delete(new_curve_name)
 
     mc.select(selected_controller)
+    mc.undoInfo(ock=True)
 
 
 def orient_controller_shape_90_degrees(x=False, y=False, z=False):
