@@ -54,7 +54,7 @@ class RigControllerShapes(QtWidgets.QWidget):
                 os.path.join(folder_path, image_file))
             button = QtWidgets.QPushButton()
             button.setIcon(QtGui.QIcon(thumbnail))
-            button.setIconSize(QtCore.QSize(60, 60))
+            button.setIconSize(QtCore.QSize(30, 30))
             button.setSizePolicy(
                 QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
             button.clicked.connect(

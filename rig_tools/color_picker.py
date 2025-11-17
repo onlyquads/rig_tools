@@ -14,7 +14,7 @@ class ColorLabel(QtWidgets.QLabel):
     def __init__(self, color):
         super().__init__()
         self.color = color
-        self.setFixedSize(50, 50)
+        self.setFixedSize(30, 30)
         self.setAutoFillBackground(True)
         self.update_color()
 
