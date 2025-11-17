@@ -10,7 +10,7 @@ def draw_curve(curve, curve_name='curve1'):
     or create curves from the controller shapes library
     '''
     # Exception for Circle shape.
-    if curve == 'Circle':
+    if curve == 'circle':
         mc.circle(d=3, r=2, nr=[0, 1, 0], ch=False)
         mc.rename('nurbsCircle1', 'curve1')
     else:
