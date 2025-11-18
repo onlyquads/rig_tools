@@ -31,7 +31,7 @@ def capture_viewport(camera_name, file_name):
     height = WIDTH
 
     # Get the path to the desktop
-    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop/renders")
+    desktop_path = os.path.join(os.path.expanduser("~"), "renders")
 
     # Construct the full file path
     file_path = os.path.join(desktop_path, file_name)
