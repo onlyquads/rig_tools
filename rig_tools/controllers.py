@@ -28,9 +28,11 @@ def create_controller_curve_from_ui(control_curve_name):
     mc.undoInfo(ock=True)
     # Check selection
     selection = mc.ls(sl=True)
+
     if not selection:
-        mc.warning("Please select a controller to replace.")
-        return
+        return mc.warning("Please select a controller to replace.")
+    if len(selection) > 1:
+        return mc.warning("Please select only one controller at the time")
 
     selected_controller = selection[0]
 
@@ -50,8 +52,14 @@ def create_controller_curve_from_ui(control_curve_name):
         mc.delete(old_shapes)
 
     # Parent new shapes to the selected controller
+    n = 0
     for shape in shapes:
+        new_name = f"{selection[0]}Shape"
+        if len(shapes) > 1:
+            n += 1
+            new_name = f"{new_name}_{n}"
         mc.parent(shape, selected_controller, shape=True, relative=True)
+        mc.rename(shape, new_name)
 
     # Delete temporary transform node
     mc.delete(new_curve_name)
