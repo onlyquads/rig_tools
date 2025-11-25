@@ -13,38 +13,45 @@ WIDTH = 256
 
 
 def capture_viewport(camera_name, file_name):
-    # Create a new model panel
-    # Find or create a model panel and set the camera
-    model_panel = mc.getPanel(withFocus=True)
-    if not model_panel or 'modelPanel' not in model_panel:
-        model_panel = mc.modelPanel(cam=camera_name, label='MyModelPanel')
-    else:
-        mc.modelPanel(model_panel, edit=True, camera=camera_name)
+    # Create a temporary window + modelPanel to guarantee validity
+    win = mc.window(title="TmpViewportWin", widthHeight=(WIDTH, WIDTH))
+    form = mc.formLayout()
+    model_panel = mc.modelPanel()
+    mc.formLayout(
+        form,
+        edit=True,
+        attachForm=[(model_panel, 'top', 0),
+                    (model_panel, 'left', 0),
+                    (model_panel, 'right', 0),
+                    (model_panel, 'bottom', 0)])
+    mc.showWindow(win)
 
+    # Assign the camera
+    mc.modelPanel(model_panel, edit=True, camera=camera_name)
+
+    # Fit view
+    mc.setFocus(model_panel)
     mc.viewFit()
 
-    mc.setAttr("hardwareRenderingGlobals.multiSampleEnable", True)
+    # Render settings
+    mc.setAttr("hardwareRenderingGlobals.multiSampleEnable", 1)
     mc.setAttr("hardwareRenderingGlobals.multiSampleCount", 8)
 
-    # Set the render resolution
-    width = WIDTH
-    height = WIDTH
+    width = height = WIDTH
 
-    # Get the path to the desktop
+    # Build file path
     desktop_path = os.path.join(os.path.expanduser("~"), "renders")
+    if not os.path.exists(desktop_path):
+        os.makedirs(desktop_path)
 
-    # Construct the full file path
     file_path = os.path.join(desktop_path, file_name)
 
-    # Set the viewport settings
-    mc.modelEditor(
-        model_panel,
-        edit=True,
-        displayAppearance='smoothShaded',
-        displayTextures=True
-        )
+    # Ensure correct drawing style
+    mc.modelEditor(model_panel, edit=True,
+                   displayAppearance='smoothShaded',
+                   displayTextures=True)
 
-    # Take the snapshot
+    # Snapshot
     mc.playblast(
         completeFilename=file_path,
         forceOverwrite=True,
@@ -57,9 +64,9 @@ def capture_viewport(camera_name, file_name):
         viewer=False,
         framePadding=0,
         percent=100
-        )
+    )
 
-    # Convert the output image to PNG format (if necessary)
+    # Convert to PNG if needed
     if not file_path.lower().endswith('.png'):
         base, ext = os.path.splitext(file_path)
         new_file_path = base + '.png'
@@ -67,8 +74,9 @@ def capture_viewport(camera_name, file_name):
         file_path = new_file_path
 
     print("Saved image to:", file_path)
-    if mc.modelPanel(model_panel, exists=True):
-        mc.deleteUI(model_panel)
+
+    if mc.window(win, exists=True):
+        mc.deleteUI(win)
 
 
 def create_controller_shape_render():
